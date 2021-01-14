@@ -7,7 +7,17 @@ from pathlib import Path
 
 
 class H5IFCBDataset(Dataset):
-    def __init__(self, files, classes,classattribute,transform=None):
+    def __init__(self, files, classes,classattribute,verbose=0,transform=None):
+        '''
+        Inits the dataset
+        :param list files: List of HDF5 files to load
+        :param list classes: Sorted list with the classes of the problem as strings (must be coherent with the next attribute)
+        :param str classattribute: Attribute in the hdf5 files that contains the class. For IFCB can be: AutoClass, OriginalClass or FunctionalGroup
+        :param int verbose: Show information of the process
+        :param transform: transformations. See test.py for an example. At least the transformation to Tensor should be there
+        :return: 
+        '''
+        self.verbose = verbose
         self.transform = transform
         self.classes = classes
         self.classes.sort()
@@ -20,7 +30,11 @@ class H5IFCBDataset(Dataset):
         self.samples = []
 
         #Open the files and store the images into memory
+        if self.verbose>0:
+            print("Loading dataset to memory...")
         for file in files:
+            if self.verbose>0:
+                print("Loading {}".format(file))
             f = h5py.File(file, 'r')
             for example in f.keys():
                 cl = f[example].attrs[classattribute]
@@ -29,7 +43,8 @@ class H5IFCBDataset(Dataset):
                 self.samples.append(Path(file).stem)
 
             f.close()
-
+        if self.verbose>0:
+            print("Done")
     def __len__(self):
         return len(self.images)
 
