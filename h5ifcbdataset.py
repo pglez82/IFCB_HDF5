@@ -19,6 +19,8 @@ class H5IFCBDataset(Dataset):
         '''
         self.verbose = verbose
         self.transform = transform
+        if (type(classes) is np.ndarray and (classes != np.sort(classes)).any()):
+            raise ValueError("Classes should be a numpy array sorted")
         self.classes = classes
         self.classes.sort()
         self.files = files
