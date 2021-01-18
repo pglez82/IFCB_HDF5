@@ -35,7 +35,7 @@ class H5IFCBDataset(Dataset):
         #Open the files and store the images into memory
         if self.verbose>0:
             print("Loading dataset to memory...")
-        for i in tqdm(range(len(files)),disable=(self.verbose<0)):
+        for i in tqdm(range(len(files)),disable=(self.verbose<1)):
             file = files[i]
             f = h5py.File(file, 'r')
             for example in f.keys():
