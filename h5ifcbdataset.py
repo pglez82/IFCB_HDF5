@@ -4,6 +4,7 @@ import numpy as np
 import io,sys
 from PIL import Image
 from pathlib import Path
+from tqdm import tqdm
 
 
 class H5IFCBDataset(Dataset):
@@ -34,9 +35,8 @@ class H5IFCBDataset(Dataset):
         #Open the files and store the images into memory
         if self.verbose>0:
             print("Loading dataset to memory...")
-        for file in files:
-            if self.verbose>0:
-                print("Loading {}".format(file))
+        for i in tqdm(range(len(files))):
+            file = files[i]
             f = h5py.File(file, 'r')
             for example in f.keys():
                 cl = f[example].attrs[classattribute]
