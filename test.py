@@ -13,6 +13,7 @@ samples=ifcb_csv.groupby('Sample').first()
 print(len(samples))
 files = list(samples[samples['year'].isin(years)].index) 
 files = ['output/'+f+'.hdf5' for f in files]
+files = files[0:5]
 
 train_transform = T.Compose([
   T.Resize(size=256),
@@ -21,7 +22,6 @@ train_transform = T.Compose([
   T.ToTensor(),            
   #T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
 ])
-
 dataset = h5ifcbdataset.H5IFCBDataset(files,classes,classattribute="AutoClass",verbose=1,transform=train_transform)
 print(len(dataset))
 image,label,sample = dataset[1000]
