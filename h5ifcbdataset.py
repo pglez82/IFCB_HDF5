@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 class H5IFCBDataset(Dataset):
-    def __init__(self, files, classes,classattribute,verbose=0,defaultclass="mix",transform=None):
+    def __init__(self, files, classes,classattribute,verbose=0,trainingset=True,defaultclass="mix",transform=None):
         '''
         Inits the dataset
         :param list files: List of HDF5 files to load
@@ -47,11 +47,12 @@ class H5IFCBDataset(Dataset):
                 self.samples.append(Path(file).stem)
 
             f.close()
-        #Check that we have examples of all classes
-        real_classes=np.unique(self.targets)
-        real_classes.sort()
-        missing_classes = np.setdiff1d(np.arange(len(classes)),real_classes)
-        if missing_classes.size>0:
+        #Check that we have examples of all classes if we are in a training set
+        if trainingset:
+            real_classes=np.unique(self.targets)
+            real_classes.sort()
+            missing_classes = np.setdiff1d(np.arange(len(classes)),real_classes)
+            if missing_classes.size>0:
                 print("ERROR. YOU MUST REBUILD THE DATASET! Not all the classes are in the training set: {}. Remove them from the classes list and start again.".format(missing_classes))
     
     def __len__(self):
