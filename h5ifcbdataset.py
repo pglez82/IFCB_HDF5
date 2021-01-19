@@ -53,9 +53,7 @@ class H5IFCBDataset(Dataset):
         missing_classes = np.setdiff1d(np.arange(len(classes)),real_classes)
         if missing_classes.size>0:
                 print("ERROR. YOU MUST REBUILD THE DATASET! Not all the classes are in the training set: {}. Remove them from the classes list and start again.".format(missing_classes))
-
-        if self.verbose>0:
-            print("Done")
+    
     def __len__(self):
         return len(self.images)
 
