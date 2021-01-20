@@ -36,6 +36,7 @@ class H5IFCBDataset(Dataset):
         for i in tqdm(range(len(files)),desc='Loading samples: ',disable=(self.verbose<1)):
             file = files[i]
             f = h5py.File(file, 'r')
+            sample = Path(file).stem
             for example in f.keys():
                 cl = f[example].attrs[classattribute]
                 #What if the examples have a class that is not in the list of classes given
@@ -44,7 +45,7 @@ class H5IFCBDataset(Dataset):
                 else:
                     self.targets.append(self.class_to_idx[cl])
                 self.images.append(np.array(f[example]))
-                self.samples.append(Path(file).stem)
+                self.samples.append(sample)
 
             f.close()
         #Check that we have examples of all classes if we are in a training set
