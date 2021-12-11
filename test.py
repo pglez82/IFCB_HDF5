@@ -24,7 +24,8 @@ train_transform = T.Compose([
 ])
 dataset = h5ifcbdataset.H5IFCBDataset(files,classes,classattribute="AutoClass",verbose=1,transform=train_transform)
 print(len(dataset))
-image,label,sample = dataset[1000]
+image,label,sample = dataset[1839]
 print(type(image))
 print(label)
 print(sample)
+print(dataset.samples_idx)

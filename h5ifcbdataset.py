@@ -27,12 +27,15 @@ class H5IFCBDataset(Dataset):
         self.files = files
         self.files.sort() #Load them in order so we get always the same results
         self.class_to_idx = {cls_name: i for i, cls_name in enumerate(self.classes)}
+        self.samples_idx = {} #Map that relates sample name with example indexes
 
+        #We use lists because we do not know the sizes until we finish loading. This is the most efficent way
         self.targets = []
         self.images = []
         self.samples = []
 
         #Open the files and store the images into memory
+        example_index = 0
         for i in tqdm(range(len(files)),desc='Loading samples: ',disable=(self.verbose<1)):
             file = files[i]
             f = h5py.File(file, 'r')
@@ -46,6 +49,9 @@ class H5IFCBDataset(Dataset):
                     self.targets.append(self.class_to_idx[cl])
                 self.images.append(np.array(f[example]))
                 self.samples.append(sample)
+            
+            self.samples_idx[sample] = np.array(range(example_index,example_index+len(f)))
+            example_index+=len(f)
 
             f.close()
         #Check that we have examples of all classes if we are in a training set
