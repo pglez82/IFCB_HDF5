@@ -79,7 +79,7 @@ class H5IFCBDataset(Dataset):
         """
         Saves the loaded dataset to disk in just one file. This can be faster than loading a file per sample.
         """
-        torch.save({"images": self.images, "targets":self.targets, "samples":self.samples}, file)
+        torch.save({"images": self.images, "targets":self.targets, "samples":self.samples, "samples_idx":self.samples_idx}, file)
 
     def load(self, file):
         """
@@ -90,3 +90,4 @@ class H5IFCBDataset(Dataset):
         self.images = data['images']
         self.targets = data['targets']
         self.samples = data['samples']
+        self.samples_idx = data['samples_idx']
