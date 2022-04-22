@@ -1,4 +1,5 @@
 from torch.utils.data import Dataset
+import torch
 import h5py
 import numpy as np
 import io,sys
@@ -11,7 +12,7 @@ class H5IFCBDataset(Dataset):
     def __init__(self, files, classes,classattribute,verbose=0,trainingset=True,defaultclass="mix",transform=None):
         '''
         Inits the dataset
-        :param list files: List of HDF5 files to load
+        :param list files: List of HDF5 files to load. This list can be empty if you plan to load the dataset from disk later.
         :param list classes: Sorted list with the classes of the problem as strings (must be coherent with the next attribute)
         :param str classattribute: Attribute in the hdf5 files that contains the class. For IFCB can be: AutoClass, OriginalClass or FunctionalGroup
         :param int verbose: Show information of the process
@@ -55,7 +56,7 @@ class H5IFCBDataset(Dataset):
 
             f.close()
         #Check that we have examples of all classes if we are in a training set
-        if trainingset:
+        if trainingset and files:
             real_classes=np.unique(self.targets)
             real_classes.sort()
             missing_classes = np.setdiff1d(np.arange(len(classes)),real_classes)
@@ -73,3 +74,19 @@ class H5IFCBDataset(Dataset):
         if self.transform is not None:
             img = self.transform(img)
         return img,target,sample
+
+    def save(self, file):
+        """
+        Saves the loaded dataset to disk in just one file. This can be faster than loading a file per sample.
+        """
+        torch.save({"images": self.images, "targets":self.targets, "samples":self.samples}, file)
+
+    def load(self, file):
+        """
+        Loads a presaved dataset from disk. If you want to use this funcion, in the constructor pass a empy list of files and then
+        call this method.
+        """
+        data = torch.load(file)
+        self.images = data['images']
+        self.targets = data['targets']
+        self.samples = data['samples']
