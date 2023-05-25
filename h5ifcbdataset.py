@@ -6,10 +6,11 @@ import io,sys
 from PIL import Image
 from pathlib import Path
 from tqdm import tqdm
+import pandas as pd
 
 
 class H5IFCBDataset(Dataset):
-    def __init__(self, files, classes,classattribute,verbose=0,trainingset=True,defaultclass="mix",transform=None):
+    def __init__(self, files, classes,classattribute,verbose=0,trainingset=True,defaultclass="mix", metadata_file=None, transform=None):
         '''
         Inits the dataset
         :param list files: List of HDF5 files to load. This list can be empty if you plan to load the dataset from disk later.
@@ -34,6 +35,9 @@ class H5IFCBDataset(Dataset):
         self.targets = []
         self.images = []
         self.samples = []
+
+        if metadata_file is not None:
+            self.metadata = pd.read_csv(metadata_file, index_col=0)
 
         #Open the files and store the images into memory
         example_index = 0
@@ -74,6 +78,11 @@ class H5IFCBDataset(Dataset):
         if self.transform is not None:
             img = self.transform(img)
         return img,target,sample
+    
+    def get_sample_metadata(self, sample):
+        if self.metadata is None:
+            raise ValueError("Metadata is none, have you passed the parameter metadata_file in the constructor?")
+        return self.metadata.loc[sample].to_numpy()
 
     def save(self, file):
         """

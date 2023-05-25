@@ -22,7 +22,7 @@ train_transform = T.Compose([
   T.ToTensor(),            
   #T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
 ])
-dataset = h5ifcbdataset.H5IFCBDataset(files,classes,classattribute="AutoClass",verbose=1,transform=train_transform)
+dataset = h5ifcbdataset.H5IFCBDataset(files,classes,classattribute="AutoClass",verbose=1,metadata_file='metadata.csv', transform=train_transform)
 print(len(dataset))
 image,label,sample = dataset[1839]
 print(type(image))
