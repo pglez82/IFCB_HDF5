@@ -84,6 +84,11 @@ class H5IFCBDataset(Dataset):
             raise ValueError("Metadata is none, have you passed the parameter metadata_file in the constructor?")
         return self.metadata.loc[sample].to_numpy()
 
+    def get_metadata_size(self):
+        if self.metadata is None:
+            raise ValueError("Metadata is none, have you passed the parameter metadata_file in the constructor?")
+        return self.metadata.shape[1]
+
     def save(self, file):
         """
         Saves the loaded dataset to disk in just one file. This can be faster than loading a file per sample.
